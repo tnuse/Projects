@@ -14,7 +14,9 @@ public class ProjectsApp {
 	// List of operations / menu
 	// @formatter:off
 	private List<String> operations = List.of(
-			"1) Add a project"
+			"1) Add a project",
+			"2) List projects",
+			"3) Select available project"
 			);
 			// @formatter:on
 
@@ -24,7 +26,7 @@ public class ProjectsApp {
 	// variable instance of type ProjectService named projectService calling on ProjectService class in
 	// projects.service package
 	private ProjectService projectService = new ProjectService();
-	
+	private Project curProject;
 	
 	
 	
@@ -58,6 +60,14 @@ public class ProjectsApp {
 				createProject();
 				break;
 				
+			case 2:
+				listProjects();
+				break;
+				
+			case 3:
+				selectProject();
+				break;
+				
 			default:
 				System.out.println("\n" + selection + " is not a valid selection.  Try again.");
 				break;
@@ -70,6 +80,37 @@ public class ProjectsApp {
 		}
 	} // END of processUserSelections
 
+	
+	// selectProject Method to select a project to view
+	private void selectProject() {
+		listProjects();
+		
+		Integer projectId = getIntInput("Select a Project ID");
+		
+		curProject = null;
+		
+		curProject = projectService.fetchProjectById(projectId);
+		
+		if (Objects.isNull(curProject)) {
+			System.out.println("\nInvalid project ID!");
+		} else {
+			System.out.println("You are working with Project ID: " + curProject);
+		}
+	} // END of selectProject method
+
+	
+	// listProjects Method to list out all available projects
+	private void listProjects() {
+		List<Project> projects = projectService.fetchAllProjects();
+		
+		System.out.println("\nPoojects: ");
+		
+		// Lambda expression to print out each project_id and project_name in the project table
+		projects.forEach(project -> System.out.println("   " + project.getProjectId() + ": " + project.getProjectName()));
+		
+	} // END of listProjects method
+
+	
 	// printOperations method to print out selection menu
 	private void printOperations() {
 		System.out.println("\nThere are the available selections.  (Press enter key to quit):");
